@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import affilation as affil
-
+#1
 def show_gragh_aff(dotes:list,terms:dict):
     ranges = np.arange(1,100,1)
     plt.ylabel("Вероятность")
