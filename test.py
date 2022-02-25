@@ -3,7 +3,7 @@ class Indexer:
     def __init__(self):
         self.data = [1,2,3,4,5,6,7,8,9,10]
     def __getitem__(self, item):
-
+s
         return self.data[item]
 
 
