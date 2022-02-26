@@ -29,30 +29,44 @@ answers = ["bad",'bad','good','bad','best','good','bad','good','best']
 
 
 if __name__ == "__main__":
-    extremums = affilation.definition_eps(terms)
-    print(extremums)
-    # print(extremums,affilation.EPSILENT)
+
+    extremums_for_input = affilation.Affilation(terms)
+    extremums_for_input.definition_eps(terms)
+
+
+
     results = {key:[] for key in set(answers)}
     dots_data = []
+
+
+    #получаем степень принадлежности каждого входного четкого элемента ко всем термам
     for dot in dotes:
-        dots_data += [affilation.result_affilation(extremums,dot)]
+        dots_data += [extremums_for_input.result_affilation(dot)]
 
-    for i in range(len(rules)):
 
-        result_for_rule = rules_get_aff.get_aff_for_rule(dots_data,rules[i],i)
-        if result_for_rule[0]:
-            results[answers[i]] += [result_for_rule]
+    print(dots_data)
 
-    #агрегирование предпосылок сделано
-    print(results,dots_data,sep='\n')
-    ans = None
-    chisl = 0
-    znam = 0
-    for massive in results.values():
-        for values in massive:
-            chisl += values[0]*values[1]
-            znam += values[0]
-    print(chisl/znam)
+    #Следующий Этап
+
+
+
+
+    # for i in range(len(rules)):
+    #
+    #     result_for_rule = rules_get_aff.get_aff_for_rule(dots_data,rules[i],i)
+    #     if result_for_rule[0]:
+    #         results[answers[i]] += [result_for_rule]
+
+    # #агрегирование предпосылок сделано
+    # print(results,dots_data,sep='\n')
+    # ans = None
+    # chisl = 0
+    # znam = 0
+    # for massive in results.values():
+    #     for values in massive:
+    #         chisl += values[0]*values[1]
+    #         znam += values[0]
+    # print(chisl/znam)
 
     #Активизация проведена(условно,так как коэффы равны 1)
 

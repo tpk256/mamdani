@@ -1,39 +1,52 @@
 
 
-EPSILENT = None #она задается автоматически
 
 
-def result_affilation(extremums,number):
-    result = {"low":0,"mid":0,"high":0}
+class Affilation:
 
-    for ext,key in zip(extremums,result):
-        result[key] = get_affilation(ext,number)
+    EPSILENT = None
+    def __init__(self,terms):
 
-    return result
+        self.terms = terms
+        if self.EPSILENT is None:
+            self.definition_eps(terms)
+    def result_affilation(self,number,extremums = None):
+        #получаем степень принадлежности к каждому терму
+        if extremums is None:
+            extremums = self.extremums
+        result = {name_terms:0 for name_terms in self.terms}
 
-def check_eps(diap, number):
-    #Проверка наличия в окрестности
-    return abs(diap-number) <= EPSILENT
+        for ext,key in zip(extremums,result):
+            result[key] = self.get_affilation(ext,number)
 
-def get_affilation(diap,number):
-    #здесь diap есть экстремумы
+        return result
 
-    if check_eps(diap,number):
-        return (EPSILENT - abs(diap-number)) / EPSILENT,number
+    def check_eps(self,diap, number):
+        #Проверка на вхождение в эпсилент окрестность
 
-    return 0,number
+        return abs(diap-number) <= self.EPSILENT
 
-def definition_eps(terms:dict):
-    centers = []
-    global EPSILENT
-    for value in terms.values():
-        ext = (value[0] + value[-1]) // 2
-        centers.append(ext)
+    def get_affilation(self,diap,number):
+        #здесь diap есть экстремумы
+
+        #Получаем степень принадлжености четкого X
+
+        if self.check_eps(diap,number):
+            return (self.EPSILENT - abs(diap-number)) / self.EPSILENT,number
+
+        return 0,number
+
+    def definition_eps(self,terms:dict):
+        #Определение Эписилент и получение точек экстремумов
+        centers = []
+        for value in terms.values():
+            ext = (value[0] + value[-1]) // 2
+            centers.append(ext)
 
 
 
 
-    EPSILENT = sum(len(ranges) for ranges in terms.values()) / len(terms)
+        self.EPSILENT = sum(len(ranges) for ranges in terms.values()) / len(terms)
+        self.extremums = centers
 
-    return centers
 
