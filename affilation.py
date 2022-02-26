@@ -1,4 +1,4 @@
-
+import rules_get_aff
 
 
 
@@ -25,6 +25,10 @@ class Affilation:
         #Проверка на вхождение в эпсилент окрестность
 
         return abs(diap-number) <= self.EPSILENT
+
+    def obtaining_prerequisites(self,dots_data,rule,index_answer):
+        #степень истиности предпосылок для правила
+        return rules_get_aff.get_aff_for_rule(dots_data, rule, index_answer)
 
     def get_affilation(self,diap,number):
         #здесь diap есть экстремумы

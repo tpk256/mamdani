@@ -2,6 +2,7 @@
 import affilation
 import rules_get_aff
 # terms = {"low":range(1,21),"lowmid":range(21,41),"mid":range(41,61),"highmid":range(61,81),"high":range(81,100+1)}
+
 terms = {"low":range(1,31),"mid":range(31,62),"high":range(62,100+1)}
 dotes = map(int,input().split()) #after dotes -> list(dotes)  dotes will be clear!
 
@@ -27,26 +28,61 @@ answers = ["bad",'bad','good','bad','best','good','bad','good','best']
 
 
 
-
 if __name__ == "__main__":
 
-    extremums_for_input = affilation.Affilation(terms)
-    extremums_for_input.definition_eps(terms)
+    input_data = affilation.Affilation(terms)
+    input_data.definition_eps(terms)
 
+    output_data = affilation.Affilation(something)
+    output_data.definition_eps(something)
 
+    print(input_data.extremums)
 
-    results = {key:[] for key in set(answers)}
     dots_data = []
 
 
     #получаем степень принадлежности каждого входного четкого элемента ко всем термам
     for dot in dotes:
-        dots_data += [extremums_for_input.result_affilation(dot)]
+        dots_data += [input_data.result_affilation(dot)]
 
 
-    print(dots_data)
 
-    #Следующий Этап
+
+    #Следующий Этап  - "пересечение" предпосылок для каждого правила
+
+    value_rules = []
+    for i,rule in enumerate(rules):
+        value_rules += [input_data.obtaining_prerequisites(dots_data,rule,i)]
+
+    print(value_rules)
+    #Выбираем те пересечения,которые > 0
+
+    value_rules_greater_zero = [(aff,i) for aff,i in value_rules if aff > 0]
+    print(value_rules_greater_zero)
+
+
+    partTwo = []
+    for mn,index_rule in value_rules_greater_zero:
+        temp_dots = something[answers[index_rule]]
+        print(temp_dots)
+        #получаем отсеченную функцию
+        temp_dots = [(min(output_data.result_affilation(dot)[answers[index_rule]][0],mn),dot) for dot in temp_dots]
+        partTwo += temp_dots
+
+
+
+    #Этап 3 композиция
+    print(partTwo)
+    results = {number:ver for ver,number in sorted(partTwo,key = lambda cartesh:cartesh[0])}
+    #фазификация
+
+    up = 0
+    down = 0
+    for key,value in results.items():
+        up += key*value
+        down += value
+
+    print(up/down)
 
 
 
