@@ -1,24 +1,22 @@
-# import график_функции_принадлжености as show
+import json
 import affilation
-import rules_get_aff
-# terms = {"low":range(1,21),"lowmid":range(21,41),"mid":range(41,61),"highmid":range(61,81),"high":range(81,100+1)}
 
-terms = {"low":range(1,31),"mid":range(31,62),"high":range(62,100+1)}
+
+
+#получаем базу с правилами
+with open("rules.json") as f:
+
+    rules_json = json.load(f)
+
+rules = rules_json["rules"]
+answers = rules_json["result"]
+
+
+#термы короче для выход/вход переменной
+terms_out  = {"noob":range(1,21),"trainee ":range(21,41),"master":range(41,61),"pro":range(61,81),"expert":range(81,101)}
+terms_in = {"low":range(1,21),"uplow":range(21,41),"mid":range(41,61),"upmid":range(61,81),"high":range(81,100+1)}
+
 dotes = map(int,input().split()) #after dotes -> list(dotes)  dotes will be clear!
-
-something  = {"bad":range(1,33),"good":range(33,68),"best":range(68,100+1)}
-rules = [['low','low'],
-         ['mid','low'],
-         ['mid','mid'],
-         ['low','mid'],
-         ['mid','high'],
-         ['high',"mid"],
-         ['high','low'],
-         ['low','high'],
-         ['high','high']]
-
-answers = ["bad",'bad','good','bad','best','good','bad','good','best']
-
 
 
 
@@ -30,16 +28,17 @@ answers = ["bad",'bad','good','bad','best','good','bad','good','best']
 
 if __name__ == "__main__":
 
-    input_data = affilation.Affilation(terms)
-    input_data.definition_eps(terms)
 
-    output_data = affilation.Affilation(something)
-    output_data.definition_eps(something)
+    input_data = affilation.Affilation(terms_in)
+    input_data.definition_eps(terms_in)
 
-    print(input_data.extremums)
+    output_data = affilation.Affilation(terms_out)
+    output_data.definition_eps(terms_out)
+
+
 
     dots_data = []
-#
+
 
     #получаем степень принадлежности каждого входного четкого элемента ко всем термам
     for dot in dotes:
@@ -54,17 +53,17 @@ if __name__ == "__main__":
     for i,rule in enumerate(rules):
         value_rules += [input_data.obtaining_prerequisites(dots_data,rule,i)]
 
-    print(value_rules)
+
     #Выбираем те пересечения,которые > 0
 
     value_rules_greater_zero = [(aff,i) for aff,i in value_rules if aff > 0]
-    print(value_rules_greater_zero)
+
 
 
     partTwo = []
     for mn,index_rule in value_rules_greater_zero:
-        temp_dots = something[answers[index_rule]]
-        print(temp_dots)
+        temp_dots = terms_out[answers[index_rule]]
+
         #получаем отсеченную функцию
         temp_dots = [(min(output_data.result_affilation(dot)[answers[index_rule]][0],mn),dot) for dot in temp_dots]
         partTwo += temp_dots
@@ -72,7 +71,7 @@ if __name__ == "__main__":
 
 
     #Этап 3 композиция
-    print(partTwo)
+
     results = {number:ver for ver,number in sorted(partTwo,key = lambda cartesh:cartesh[0])}
     #фазификация
 
@@ -82,29 +81,6 @@ if __name__ == "__main__":
         up += key*value
         down += value
 
+    #четкое число
     print(up/down)
 
-
-
-
-    # for i in range(len(rules)):
-    #
-    #     result_for_rule = rules_get_aff.get_aff_for_rule(dots_data,rules[i],i)
-    #     if result_for_rule[0]:
-    #         results[answers[i]] += [result_for_rule]
-
-    # #агрегирование предпосылок сделано
-    # print(results,dots_data,sep='\n')
-    # ans = None
-    # chisl = 0
-    # znam = 0
-    # for massive in results.values():
-    #     for values in massive:
-    #         chisl += values[0]*values[1]
-    #         znam += values[0]
-    # print(chisl/znam)
-
-    #Активизация проведена(условно,так как коэффы равны 1)
-
-
-    # show.show_gragh_aff(list(dotes),terms)
