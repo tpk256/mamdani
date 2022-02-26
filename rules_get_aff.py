@@ -1,4 +1,4 @@
-
+#
 
 
 def get_aff_for_rule(dote_data,rule,index_rule):

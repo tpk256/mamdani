@@ -39,7 +39,7 @@ if __name__ == "__main__":
     print(input_data.extremums)
 
     dots_data = []
-
+#
 
     #получаем степень принадлежности каждого входного четкого элемента ко всем термам
     for dot in dotes:

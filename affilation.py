@@ -18,7 +18,7 @@ class Affilation:
 
         for ext,key in zip(extremums,result):
             result[key] = self.get_affilation(ext,number)
-
+#
         return result
 
     def check_eps(self,diap, number):
