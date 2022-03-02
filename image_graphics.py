@@ -1,6 +1,6 @@
 import matplotlib
 import matplotlib.pyplot as plt
-from Lingvar import Varling
+from LingVar import Varling
 index = 1
 
 
