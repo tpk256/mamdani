@@ -1,18 +1,14 @@
 class LingVar:
-
     def __init__(self,name,terms,value):
-
         self.name = name
         self.terms = terms
         self.value = value
-
 
         self.extremums = None
         self.eps = None
         self.aff_terms = None
 
     def get_range(self):
-
         ranges_terms = {}
         count_terms = len(self.terms)
         step = 100 // count_terms
