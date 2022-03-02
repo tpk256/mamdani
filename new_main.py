@@ -1,7 +1,11 @@
 import json
-import Result
-import update_version_Lingvar
+import copy
+from pprint import pprint
+import image_graphics as ig
+import Rules
+import Lingvar
 import sys
+
 
 # import requests
 
@@ -23,85 +27,106 @@ if __name__ == "__main__":
     variables = {var: int(dig) for dig, var in zip(sys.argv[1:], [key for key in terms if key != "Result"]) if
                  dig.isdigit()}
 
-    # print(terms)
-    # print(variables)
+    show_end = "yes" in sys.argv[1:]
+
+
     lingVars = []
     for var in variables:
-        lingVars.append(update_version_Lingvar.Varling(terms = terms[var],value = variables[var],name_ling = var ))
+        lingVars.append(Lingvar.Varling(terms = terms[var],value = variables[var],name_ling = var ))
+
+    rules = []
+
+    for rule in rules_json:
+        base_rules  = {key:value for key,value in rule.items() if  key not in ("Key","Result")}
+        rules.append(Rules.Rule(key = rule["Key"],rule = base_rules,result= rule["Result"]))
+
+
+    for rule in rules:
+        rule.get_status(*lingVars)
+
+
+
+    #получаем правила активные правила
+    rules = [rule for rule in rules if rule.status > 0]
+
+
+
+    dot_result = Lingvar.Varling(terms = terms["Result"],value = None,name_ling = "Result")
+    end = []
+    for rule in rules:
+        axes_x = dot_result.ranges_terms[rule.result]['aff']
+        for x in axes_x:
+            dot_result.value = x
+            dot_result.affilation_trapeze()
+            y = round(min(dot_result.affilation_terms[rule.result],rule.status),4)
+            end.append((x,y))
+
+    end.sort(key = lambda x :x[1] )
+    end = {key:value for key,value in end if value > 0}
+
+    #итоговая функция её точки
+    x = sorted(end)
+    y = [end[key] for key in sorted(end)]
+
+
+
+    #Получение итоговой функции
+    res = {"ResultFunc": {"x": x, "y": y},"Result":None}
+
+    for_pictures = copy.deepcopy(lingVars)
+
+
     for var in lingVars:
-        print(var.affilation_terms)
-    #
-    # if len(variables) != 6:
-    #     raise ValueError("Переданы не все переменные")
-    # # Представляем каждую переменную в виде независимого объекта
-    # lingVars = [LingVar.LingVar(name, terms[name], variables[name]) for name in variables]
-    #
-    # # Формируем ренджи для каждого терма у переменной
-    # for lv in lingVars:
-    #     lv.get_range()
-    #
-    # # Определяем экстремумы и эпсилент
-    # for lv in lingVars:
-    #     lv.definition_eps_ext()
-    # print(lingVars[0].terms)
-    # # Получаем истинность каждой лингв переменной
-    # for lv in lingVars:
-    #     lv.ready_aff()
-    # res = Result.Result(rules_json)
-    # # посчитали подзаключения
-    # subconclusions = res.get_subconclusions_for_all_rules(*lingVars)
-    #
-    #
-    # #посчитали правила
-    # var_res = LingVar.LingVar("Result", terms["Result"], -1)
-    # var_res.get_range()
-    # var_res.definition_eps_ext()
-    #
-    # base_rule = set()
-    # for i in range(1,100+1):
-    #     var_res.value = i
-    #     var_res.ready_aff()
-    #
-    #     for value in var_res.aff_terms:
-    #         base_rule |= {(value,*var_res.aff_terms[value])}
-    #
-    #
-    # # Найдём усеченные функции для каждого правила subconclusions
-    # values_from_rules = []
-    # for aff,key_rule in subconclusions:
-    #     find_rule = [rule for rule in rules_json if rule["Key"] == key_rule][-1]["Result"]
-    #     find_range = var_res.terms[find_rule]
-    #
-    #     better_range = range(max(1,find_range.start - int(var_res.eps)),min(101,find_range.stop+int(var_res.eps)))
-    #
-    #     for i in better_range:
-    #         aff_from_base = [x for x in base_rule if x[0] == find_rule and x[-1] == i][-1][1]
-    #
-    #
-    #         values_from_rules.append((min(aff,aff_from_base),i))
-    #
-    # print(subconclusions)
-    #
-    # #объединение всех правил
-    # obb_rules = { value:aff for aff,value in sorted(values_from_rules,key = lambda el:el[0])}
-    #
-    #
-    # #дефазификация
-    # # print(obb_rules)
-    # up = 0
-    # down = 0
-    #
-    # for value in obb_rules:
-    #     up += value*obb_rules[value]
-    #     down += obb_rules[value]
-    #
-    # try:
-    #     print(up/down)
-    # except:
-    #     print("This rule is not defined")
-    #
-    # # vars = [print(var) for var in lingVars]
-    # # Я остановился на моменте с поиск истинности подзаключений операция min
-    #
+        temp_dict = {}
+        #"x":[],"y":[]
+        for rangs in var.ranges_terms:
+            _x = []
+            _y = []
+            term = rangs
+
+
+            for x_ in  var.ranges_terms[term]["aff"]:
+                _x += [x_]
+                var.value = x_
+                var.affilation_trapeze()
+                _y += [round(var.affilation_terms[term],4)]
+            temp_dict[term] = [_x,_y]
+        res[var.name_ling] = temp_dict
+
+
+
+    up = 0
+    down = 0
+    for x_, y_ in zip(x, y):
+        up += x_ * y_
+        down += y_
+
+    try:
+        temp = up / down
+        res["Result"] = temp
+    except:
+        res["Result"] = -1 #правило отсутсвует
+
+
+    # Трассировка!!!
+
+    # pprint(res)
+    print(res["Result"])
+
+
+
+    if show_end:
+        for var in for_pictures:
+            ig.get_graphic(var)
+        ig.get_result(x,y)
+
+
+
+
+
+
+
+
+
     #
 
