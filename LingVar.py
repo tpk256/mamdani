@@ -3,53 +3,46 @@ class Varling:
         self.terms = terms
         self.value = value
         self.name_ling = name_ling
-        self.definition_ranges_terms()
-        if not (value is None):
-            self.affilation_trapeze()
-    def definition_ranges_terms(self):
-        ranges_terms = {}
-        count_terms = len(self.terms)
 
-        #eps для значений,для которых функция принадлжености принимает значения > 0
-        step = 100 // count_terms
+        self.aff_for_terms = None
+        if not (value  is None):
+            self.affilationForTerms()
+    def affilationForTerms(self,Number = None):
+        #Number = None в виду того,что позже будет необходимо посчитать для различнхы значений
+        aff_terms = {}
+        if Number is None:
+            self.aff_for_terms = aff_terms
+            Number = self.value
+
+        for term in self.terms:
+            #Получаем все точки x для нашей трапеции
+            aff_terms[term] = None
 
 
-        #eps для ядра множества терма
-        core_step = step // 3 // 2
+            dots = self.terms[term]['x']
 
-        for i in range(count_terms):
-            if i == 0:
-                core = range(1, i * step + 1 + step // 2 + core_step)
-                aff = range(1, (i + 1) * step + 1 + core_step)
+            # Определяем не нулвые точки и ядро
+            range_affilation = (dots[0], dots[-1])
+            range_core = (dots[1], dots[2])
 
-            elif i == count_terms - 1:
-                aff = range(ranges_terms[self.terms[i-1]]["core"][-1], 100 + 1)
-                core = range(i * step + 1 + step // 2-core_step,100 + 1 )
-            else:
-                aff = range(ranges_terms[self.terms[i-1]]["core"][-1], (i + 1) * step + 1+core_step)
-                core = range(i * step + 1 + step // 2 - core_step, i * step + 1 + step // 2 + core_step)
-            ranges_terms[self.terms[i]] = {"aff":aff,"core":core}
-        self.ranges_terms = ranges_terms
-
-    def affilation_trapeze(self):
-        self.affilation_terms = {}
-        for term_range in self.ranges_terms:
-            if self.value in self.ranges_terms[term_range]["aff"]:
-                if self.value in  self.ranges_terms[term_range]["core"]:
-                    self.affilation_terms[term_range] = 1.
-                else:
-
-                    if self.value < self.ranges_terms[term_range]["core"][0]:
-                        cur_val = self.value - self.ranges_terms[term_range]["aff"][0]
-                        self.affilation_terms[term_range] = cur_val / (self.ranges_terms[term_range]["core"][0]-self.ranges_terms[term_range]["aff"][0])
-                    else:
-                        cur_val = self.ranges_terms[term_range]["aff"][-1] - self.value
-                        self.affilation_terms[term_range] = cur_val / abs(self.ranges_terms[term_range]["aff"][-1] - self.ranges_terms[term_range]["core"][-1])
-
+            if dots[1] <= Number <= dots[2]  :
+                aff_terms[term] = 1.
+            elif dots[0] <=  Number <= dots[-1]:
+                answer = None
+                length = 0
+                if range_core[0] > Number:
+                    length = range_core[0]-range_affilation[0]
+                    answer = (Number - range_affilation[0]) / length
+                elif range_core[-1] < Number:
+                    length = range_affilation[-1] -  range_core[-1]
+                    answer = ( range_affilation[-1] - Number ) / length
+                aff_terms[term] = round(answer,4)
 
             else:
-                self.affilation_terms[term_range] = 0.
+                aff_terms[term] = 0.
 
+
+        return aff_terms
 
 
 
