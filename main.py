@@ -3,7 +3,7 @@ import copy
 from pprint import pprint
 # import image_graphics as ig
 import Rules
-import Lingvar
+import LingVar
 import sys
 
 
