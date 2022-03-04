@@ -1,41 +1,29 @@
 import matplotlib
 import matplotlib.pyplot as plt
-from Lingvar import Varling
-index = 1
-
-
-def get_graphic(obj:Varling,plt = plt):
-    global index
-    fig = plt.figure(index)
-
-    axes = fig.add_subplot(111)
+from Rules import Rule
 
 
 
-    #только для термов
-    diap = range(1,100+1)
-    axes.grid()
+def get_graphic(rules,plt = plt):
 
-    axes.set_title(obj.name_ling)
-    for term in obj.terms:
-        y = []
-        for i in diap:
-            obj.value = i
-            obj.affilation_trapeze()
-            y += [obj.affilation_terms[term]]
+    for rule in rules:
+        fig = plt.figure(f"idRule_{rule.key}")
 
+        axes = fig.add_subplot(111)
 
-        axes.plot(diap, y,label = term,marker = "h",linewidth = 0.3)
-    axes.legend()
-    fig.savefig(obj.name_ling)
-    index += 1
+        axes.grid()
+
+        axes.set_title(rule.result)
+        axes.plot(rule.x, rule.y,marker = "h",linewidth = 0.3)
+        fig.savefig(f"idRule_{rule.key}")
+
 
 
 
 
 def get_result(x,y,plt = plt):
-    global index
-    fig = plt.figure(index)
+
+    fig = plt.figure("Итог")
     axes = fig.add_subplot(111)
 
 
