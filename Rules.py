@@ -1,4 +1,4 @@
-from Lingvar import Varling
+from LingVar import Varling
 class Rule:
     def __init__(self,key,rule,result):
         self.rule = rule

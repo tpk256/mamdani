@@ -3,7 +3,7 @@ import copy
 from pprint import pprint
 import image_graphics as ig
 import Rules
-import Lingvar
+import LingVar
 import sys
 
 
@@ -26,13 +26,14 @@ if __name__ == "__main__":
     # Получаем переменные
     variables = {var: int(dig) for dig, var in zip(sys.argv[1:], [key for key in terms if key != "Result"]) if
                  dig.isdigit()}
-
+    if len(variables) != 6:
+        raise ValueError("Переданы не все переменные")
     show_end = "yes" in sys.argv[1:]
 
 
     lingVars = []
     for var in variables:
-        lingVars.append(Lingvar.Varling(terms = terms[var],value = variables[var],name_ling = var ))
+        lingVars.append(LingVar.Varling(terms = terms[var],value = variables[var],name_ling = var ))
 
     rules = []
 
@@ -51,7 +52,7 @@ if __name__ == "__main__":
 
 
 
-    dot_result = Lingvar.Varling(terms = terms["Result"],value = None,name_ling = "Result")
+    dot_result = LingVar.Varling(terms = terms["Result"],value = None,name_ling = "Result")
     end = []
     for rule in rules:
         axes_x = dot_result.ranges_terms[rule.result]['aff']
@@ -111,7 +112,7 @@ if __name__ == "__main__":
     # Трассировка!!!
 
     # pprint(res)
-    print(res["Result"])
+    print(res)
 
 
 
