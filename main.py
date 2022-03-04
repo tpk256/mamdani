@@ -15,17 +15,17 @@ import sys
 #     f.write(requests.get(url = "http://192.168.43.151:8080/api/getRuleList").text)
 
 # считываем термы
-with open("terms.json", encoding="UTF-8") as f:
+with open("src/mamdani/terms.json", encoding="UTF-8") as f:
     terms = json.load(f)
 
 # получаем базу с правилами
-with open("rules.json") as f:
+with open("src/mamdani/rules.json") as f:
     rules_json = json.load(f)
 
 
 
 #Загружаем точки
-with open("dots.json", encoding="UTF-8") as f:
+with open("src/mamdani/dots.json", encoding="UTF-8") as f:
     dots = json.load(f)
 
 
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     #Инициализация наших входных лингвистических переменных
     lingVars = []
     for nameLingVar,valueNumber in variables.items():
-        lingVars.append(Lingvar.Varling(name_ling = nameLingVar,value = valueNumber,terms = dots[nameLingVar]))
+        lingVars.append(LingVar.Varling(name_ling = nameLingVar,value = valueNumber,terms = dots[nameLingVar]))
 
 
 
@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     rules = [rule for rule in rules if rule.status > 0]
 
-    dot_result = Lingvar.Varling(terms = dots["Result"],value = None,name_ling = "Result")
+    dot_result = LingVar.Varling(terms = dots["Result"],value = None,name_ling = "Result")
     # print(dot_result)
 
 
