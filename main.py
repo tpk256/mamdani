@@ -15,19 +15,21 @@ import sys
 #     f.write(requests.get(url = "http://192.168.43.151:8080/api/getRuleList").text)
 
 # считываем термы
-with open("src/mamdani/terms.json", encoding="UTF-8") as f:
+Path = ''
+
+if(len(sys.argv) > 7):
+    Path = "%s/" % (sys.argv[7])
+
+with open("%sterms.json" % (Path), encoding="cp1251") as f:
     terms = json.load(f)
 
 # получаем базу с правилами
-with open("src/mamdani/rules.json") as f:
+with open("%srules.json" % (Path), encoding="cp1251") as f:
     rules_json = json.load(f)
 
-
-
 #Загружаем точки
-with open("src/mamdani/dots.json", encoding="UTF-8") as f:
+with open("%sdots.json" % (Path), encoding="cp1251") as f:
     dots = json.load(f)
-
 
 def checkNumber(value):
     try:
